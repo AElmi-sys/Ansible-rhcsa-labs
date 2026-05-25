@@ -1,0 +1,63 @@
+
+---
+- name: SElinux Security
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Ensure http is installed
+      dnf:
+        name: httpd
+        state: present
+    
+    - name: Start and enable httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Create a directory
+      file:
+        path: /var/www/custom
+        state: directory
+        mode: '0755'
+
+    - name: Ensure SElinux are installed
+      dnf:
+        name: policycoreutils-python-utils
+        state: present
+
+    - name: Configure SElinux content
+      command: semanage fcontext -a -t httpd_sys_content_t "/var/www/custom(/.*)?"
+
+    - name: Apply new SElinux context
+      command: restorecon -Rv /var/www/custom 
+
+    - name: Start firewalld 
+      service:
+        name: firewalld
+        state: started
+        enabled: yes 
+
+    - name: open port 8080 in firewall
+      command: firewall-cmd --permanent --add-port=8080/tcp
+
+    - name: Add http service to firewall
+      command: firewall-cmd --permanent  --add-service=http
+
+    - name: Reload firewall
+      command: firewall-cmd --reload 
+
+    - name: Change httpd to listen port 8080
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^listen'
+        line: 'listen 8080'  
+
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+
+
