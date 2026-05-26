@@ -1,0 +1,31 @@
+
+
+---
+- name: Configure mutiple drives
+  hosts: all
+  become: yes
+
+  vars:
+    target_drives:
+      - sdb
+      - sdb
+
+  tasks:
+    - name: Creat ext4 filesystem 
+      community.general.filesystem:
+        fstype: ext4
+        dev: "/dev/{{ item }}"
+
+      loop: "{{ target_drives }}"
+
+    - name: mount each drive
+      ansible.posix.mount:
+        path:  "/mount/data_{{item }}"
+        src: "/dev/{{ item }}"
+        fstype: ext4
+        state: mounted
+
+      loop: "{{ target_drives }}"
+
+
+
