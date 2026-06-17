@@ -1,0 +1,25 @@
+
+---
+- name: Create user
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create a group
+      ansible.builtin.group:
+        name: Admin
+        state: present
+
+    - name: Create users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: Admin
+        append: yes
+        password: "{{ 'GELLE' | password_hash('sha512') }}"
+
+      loop:
+        - dev1
+        - dev2 
+
+    
+

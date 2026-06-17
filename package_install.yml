@@ -1,0 +1,12 @@
+
+---
+- name: Install and remove a package
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install a package
+    ansible.builtin.dnf:
+      name: httpd
+      state: present
+
