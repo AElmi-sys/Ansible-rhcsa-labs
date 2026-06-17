@@ -1,0 +1,24 @@
+
+---
+- name: Add multiple repo to remote nodes
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: repo_baseos
+      ansible.builtin.yum_repository:
+        name: BaseOS
+        description: YUM repo
+        file: local
+        baseurl: https://mirror.example.com/rhel10/BaseOS
+        enabled: true
+        gpgcheck: false
+
+    - name: repo_appstream
+      ansible.builtin.yum_repository:
+        name: AppStream
+        description: YUM repo
+        file: local
+        baseurl: https://mirror.example.com/rhel10/AppStream
+        enabled: true
+        gpgcheck: false
