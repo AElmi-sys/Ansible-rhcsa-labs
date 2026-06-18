@@ -5,8 +5,14 @@
   become: yes
 
   tasks:
-    - name: Install a package
-    ansible.builtin.dnf:
-      name: httpd
-      state: present
+    - name: Install a package  
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Start and enable  httpd
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: started
 
