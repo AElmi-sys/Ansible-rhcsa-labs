@@ -1,0 +1,31 @@
+
+---
+- name: Selinux mode permissive
+  hosts: all
+  become: yes
+
+  tasks:
+    - block:
+        - name: Set selinux enforcing
+          ansible.posix.selinux:
+            policy: targeted
+            state: enforcing
+      rescue:
+        - name: log failure
+          debug:
+            msg:  "Failed to configure selinux" 
+      always:
+        - name: display message
+          debug:
+            msg:   "selinux task complete" 
+
+
+
+
+
+
+
+
+       
+             
+
