@@ -1,6 +1,6 @@
 
 ---
-- name: Selinux mode permissive
+- name: Selinux mode enforcing
   hosts: all
   become: yes
 
