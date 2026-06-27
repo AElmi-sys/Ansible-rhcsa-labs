@@ -1,0 +1,22 @@
+
+---
+- name: Create a logical volume of 512m
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Create VG group
+      community.general.lvg:
+        vg: vg_data
+        pvs:
+          - /dev/sdb
+          - /dev/nvme0n1
+
+    - name: Create a logic and init 
+      community.general.lvol:
+        vg: vg_data
+        lv: lv_data
+        size: '512M'
+      
+

@@ -1,0 +1,51 @@
+
+---
+- name: install firewalld, add service and port
+  hosts: all
+  become: yes
+
+  pre_tasks:
+    - name: OS family is redhat
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "RedHat"
+        fail_msg: " This is tailored for redhat"
+
+  tasks:
+    - name: Install firewalld
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present 
+
+    - name: Start and enbale firewalld
+      ansible.builtin.service:
+        name: firewalld
+        enabled: yes
+        state: started
+
+    - name: add http service to firewall
+      ansible.posix.firewalld:
+        service: https
+        state: enabled
+        permanent: true
+        immediate: true 
+
+    - name: Firewall rules using a loop
+      ansible.posix.firewalld:
+        service: "{{ item.service | default(omit) }}"
+        port: "{{ item.port | default(omit) }}"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop:
+        - { service: "http" }
+        - { port: "80/tcp" }    
+      
+
+
+
+
+
+
+
+
