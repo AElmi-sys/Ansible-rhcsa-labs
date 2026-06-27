@@ -1,17 +1,17 @@
 
 ---
-- name: User, group creation
+- name: User, group management creation
   hosts: all
   become: yes
 
   tasks:
     - name: Create group
-      group:
+     ansible.builtin.group:
         name: devops
         state: present
 
     - name: Create user mario and luigi with secondary group with immidate password reset
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
         groups: devops
         append: yes
@@ -22,7 +22,7 @@
         - luigi
 
     - name: create a collab directory
-      file:
+      ansible.builtin.file:
         path: /shares/devops_project
         owner: root
         group: devops

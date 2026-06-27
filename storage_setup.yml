@@ -8,7 +8,7 @@
   vars:
     target_drives:
       - sdb
-      - sdb
+      - sdc
 
   tasks:
     - name: Creat ext4 filesystem 

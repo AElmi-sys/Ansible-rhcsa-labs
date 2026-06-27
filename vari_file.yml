@@ -1,5 +1,5 @@
 ---
-- name: Install apache
+- name: Install http, and enable it
   hosts: all 
   become: yes
 
@@ -11,7 +11,7 @@
         msg: "{{ apache_port }}"
 
     - name: start
-      service:
+     ansible.builtin.service:
         name: httpd
         state: started
         enabled: yes

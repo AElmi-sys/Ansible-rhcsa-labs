@@ -11,28 +11,17 @@
         state: present
 
     - name: Create a user
-      user:
+      ansible.builtin.user:
         name: developer
         groups: automation
         append: yes
 
     - name: Package management
-      dnf:
+      ansible.builtin.dnf:
         name:
           - httpd
           - mod_ssl
         state: latest
-
-
-    - name: Deploy apache
-      ansible.builtin.template:
-        src:  ./tempaltes/vhost.conf.j2
-        dst: /etc/httpd/conf.d/vhost.conf
-        ower: root
-        group: root
-        mode: '0644'
-      notify:
-        - Restart apache
 
 
 

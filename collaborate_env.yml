@@ -6,20 +6,20 @@
 
   tasks:
     - name: greate sysop group with gid 3000
-      group:
+      ansible.builtin.group:
         name: sysops
         gid: 3000
         state: present
 
     - name: Create a user alice with secondary group
-      user:
+     ansible.builtin. user:
         name: alice
         groups: sysops
         append: yes
         state: present
 
     - name: Create a shared directory
-      file:
+      ansible.builtin.file:
         path: /common/sysadmin_pro
         state: directory
         group: sysops
