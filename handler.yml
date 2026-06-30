@@ -1,0 +1,14 @@
+
+---
+- name: Handle httpd
+  hosts: all
+  become: yes
+
+  handlers:
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+
+     

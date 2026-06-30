@@ -1,0 +1,34 @@
+
+---
+- name: User, group management creation
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create group
+     ansible.builtin.group:
+        name: devops
+        state: present
+
+    - name: Create user mario and luigi with secondary group with immidate password reset
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: devops
+        append: yes
+        password_expire_max: 0
+
+      loop:
+        - mario
+        - luigi
+
+    - name: create a collab directory
+      ansible.builtin.file:
+        path: /shares/devops_project
+        owner: root
+        group: devops
+        mode: '2770'
+        state: directory
+      
+
+
+
