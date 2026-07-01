@@ -1,0 +1,35 @@
+
+--- 
+- name: Install http and enable it.
+  hosts: all
+  become: yes
+  vars:
+    web_server: "httpd"
+    index_message: "Wecome to RHCE varibale lab"
+    path_file: "/var/www/html/index.html"
+
+  tasks:
+    - name: install a http package
+      ansible.builtin.dnf:
+        name: "{{ web_server }}"
+        state: present
+
+    - name: enable service
+      ansible.builtin.service:
+        name: "{{ web_server }}"
+        enabled: yes
+        state: started 
+
+    - name: Create index.html file with cusctom message
+      ansible.builtin.copy:
+        content: "{{ index_message }}\n"
+        dest: "{{ path_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+
+    
+
+        
+        
+
