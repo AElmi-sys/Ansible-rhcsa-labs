@@ -1,0 +1,50 @@
+
+---
+- name: Install multiple packages
+  hosts: all
+  become: yes
+
+  vars:
+    packages:
+      - httpd
+      - mariadb-server
+    services:
+      web: httpd
+      db: mariadb
+    service_state: started
+  
+    web_root: "/var/www/html/index.html"
+    index_msg: "Welcome to RHCE Variable lab4"
+
+  tasks:
+    - name: Install multiple packages and start services
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+    - name: Enable servcies
+      ansible.builtin.service:
+        name: "{{ item }}"
+        enabled: true
+        state: "{{ service_state }}"
+      loop:
+        - "{{ services.web }}"
+        - "{{ services.db }}"
+
+    - name: install a directory with a file
+      ansible.builtin.copy:
+        content: | 
+          "{{ index_msg }}"
+        dest: "{{ web_root }}"
+
+        
+
+
+
+
+   
+
+
+
+
+
