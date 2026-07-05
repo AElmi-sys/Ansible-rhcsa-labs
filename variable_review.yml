@@ -1,0 +1,46 @@
+
+---
+- name: Install a package, enable it
+  hosts: all
+  become: yes
+
+  vars:
+    package_name: "httpd"
+    service_name: "httpd"
+    document_root: "/var/www/html"
+    pager_title: " Welcome to RHCE Lab5"
+
+  tasks:
+    - name: Install httpd package
+      ansible.builtin.dnf:
+        name: "{{ package_name }}"
+        state: present
+
+    - name: Enable httpd
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: true
+
+    - name: Install directory with a file
+      ansible.builtin.file:
+        name: "{{ document_root }}"
+        state: directory
+        mode: '0755' 
+
+    - name: Create a index.html with dynamic content 
+      ansible.builtin.copy:
+        content: |
+          "{{ pager_title }}"
+        dest: "{{ document_root }}/index.html\n"
+        mode: '0655'
+
+    - name: Print configuration debug message
+      ansible.builtin.debug:
+        msg: |
+          package: "{{ package_name }}"
+          service: "{{ service_name }}"
+          Document Root: "{{ document_root }}"
+
+
+
