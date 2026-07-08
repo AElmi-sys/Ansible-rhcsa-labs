@@ -1,0 +1,12 @@
+
+--- 
+- name: Generate server information report
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Generate server inforantion file from jinja2 template
+      ansible.builtin.template:
+        src: templates_server.j2
+        dest: /tmp/server_info.txt
+        mode: '0644' 
