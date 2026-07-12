@@ -1,0 +1,46 @@
+
+---
+- name: install httpd and enable it
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Enable httpd service
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Allow a http in firewall
+      ansible.posix.firewalld:
+        service: https
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Create a file
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html.txt
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Restarted httpd
+
+
+  handlers:
+    - name: restart httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+
+
+
+        
+
