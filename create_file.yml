@@ -1,0 +1,58 @@
+
+---
+- name: Create a directory and a file
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create a directory
+      ansible.builtin.file:
+        path: /tmp/linux
+        state: directory
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create a file
+      ansible.builtin.file:
+        path: /tmp/linux/file.txt
+        state: touch
+        mode: '0644'
+        modification_time: preserve
+        access_time: preserve
+
+    - name: Create a MOTD for everyone
+      ansible.builtin.template:
+        src: motd2.j2
+        dest: /etc/motd2.txt
+        mode: '0644' 
+
+    - name: permit sshd root login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin yes'
+        state: present
+      notify:
+        - Restart sshd
+
+    - name: Check the stat of the file
+      ansible.builtin.stat:
+        path: /etc/motd2.txt
+      register: motd_stat
+
+    - name: print a debug message and exit
+      ansible.builtin.debug:
+        msg: "CRITICAL: /etc/motd2.txt exists on the remote note. Exiting it."
+      when: motd_stat.stat.exists
+
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+
+
+
+
+
