@@ -1,6 +1,6 @@
 
 ---
-- name: Install hnd configure ttpd only on  Rocky linux
+- name: Install and configure httpd only on  Rocky linux
   hosts: all
   become: yes
 
