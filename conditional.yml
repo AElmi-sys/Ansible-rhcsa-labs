@@ -1,0 +1,27 @@
+
+---
+- name: Install hnd configure ttpd only on  Rocky linux
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install and configure httpd only on rocky linux
+      when: ansible_distribution == "Rocky"
+      block:
+        - name: Insall  httpd on rocky linux
+          ansible.builtin.dnf:
+            name: httpd
+            state: present
+
+        - name: Enable service and start it
+          ansible.builtin.service:
+            name: httpd
+            state: started
+            enabled: yes
+          notify:
+            - restart httpd
+  handlers:
+        - name: restart httpd
+          ansible.builtin.service:
+            name: httpd
+            state: restarted
