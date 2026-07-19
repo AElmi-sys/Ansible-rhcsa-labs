@@ -1,0 +1,36 @@
+
+---
+- name: Install either httpd or mariadb-server depending on target host name
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd only on webserver
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+      when: ansible_facts['hostname'] == "webserver"
+
+    - name: Install db only on dbserver
+      ansible.builtin.dnf:
+        name: mariadb-server
+        state: present
+      when:  ansible_facts['hostname']  == "dbserver"
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Install chrony if not installed
+      ansible.builtin.dnf:
+        name: chrony
+        state: present
+      when: "'chrony' is not in ansible_facts.packages"
+
+    - name: Install chrony when rocky is verion 10 only
+      ansible.builtin.dnf:
+        name: chrony
+        state: present
+      when: ansible_facts['distribution_major_version'] == '10'
+
+
