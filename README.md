@@ -1,7 +1,7 @@
  HEAD
 
 HEAD
-# Ansible RHCSA Labs
+# Ansible RHCE Labs
 
 A collection of Ansible playbooks designed to automate system administration, security hardening, and environment deployment for Red Hat Enterprise Linux (RHEL) environments.
 
