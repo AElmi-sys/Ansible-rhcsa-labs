@@ -1,0 +1,27 @@
+
+--- 
+- name: Create group with users
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create a group
+      ansible.builtin.group:
+        name: developers
+        state: present
+
+    - name: Create users and add them to a secondary group
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /bin/bash
+        groups: developers
+        append: yes
+      loop:
+        - john
+        - mary
+        - david
+         
+
+
+
+
