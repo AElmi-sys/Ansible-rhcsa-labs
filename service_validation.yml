@@ -1,0 +1,45 @@
+
+---
+- name: check wheather httpd is installed
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check if a httpd is installed
+      ansible.builtin.command: rpm -q httpd
+      register: http_install_query 
+      changed_when: false
+      failed_when: false
+  
+    - name: Install httpd if not installed
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+      register: httpd_install_status
+      when: http_install_query.rc != 0
+
+    - name: Check weather service is runnging
+      ansible.builtin.command: systemctl is-active httpd
+      register: httpd_service_status
+      changed_when: false
+      failed_when: false
+
+    - name: Check and enable http if inactive
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: httpd_service_status.stdout != "active" 
+
+    - name: Summary
+      ansible.builtin.debug:
+        msg: > 
+          "Host: {{ inventory_hostname }}"
+          "Package Installed: {{ http_install_query.rc != 0 }}"
+          "Service Running: {{ httpd_service_status.stdout }}"
+      
+
+
+  
+ 
+
