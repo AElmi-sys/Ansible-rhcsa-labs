@@ -1,0 +1,32 @@
+
+---
+- name: Install httpd and enable it
+  hosts: all
+  become: true
+
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - httpd
+        - mariadb-server
+
+    - name: Enable httpd and mariadb
+      ansible.builtin.service:
+        name: "{{ item }}" 
+        state: started
+        enabled: true
+      loop:
+        - httpd
+        - mariadb
+      register: status_txt
+
+    - name: Display what reg capture
+      ansible.builtin.debug:
+        var: status_txt
+        
+
+
