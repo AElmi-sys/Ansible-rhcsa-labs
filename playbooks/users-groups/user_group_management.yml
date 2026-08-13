@@ -1,0 +1,33 @@
+---
+- name: Manage developer users, group, and shared directory
+  hosts: all
+  become: true
+
+  vars:
+    dev_group: developer
+    dev_users:
+      - mario
+      - mike
+    shared_dir: /share/devops_project
+
+  tasks:
+    - name: Ensure developer group exists
+      ansible.builtin.group:
+        name: "{{ dev_group }}"
+        state: present
+
+    - name: Ensure developer users exist
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: "{{ dev_group }}"
+        append: true
+        state: present
+      loop: "{{ dev_users }}"
+
+    - name: Create collaborative directory
+      ansible.builtin.file:
+        path: "{{ shared_dir }}"
+        owner: root
+        group: "{{ dev_group }}"
+        mode: '2770'
+        state: directory
