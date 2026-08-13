@@ -1,0 +1,12 @@
+---
+- name: Collect and display system information
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Display hostname and operating system
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ ansible_hostname }}"
+          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "Kernel: {{ ansible_kernel }}"
+          - "Architecture: {{ ansible_architecture }}"
