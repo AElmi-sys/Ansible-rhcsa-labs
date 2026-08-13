@@ -1,29 +1,65 @@
- HEAD
+# Linux Systems & Ansible Automation Labs
 
-HEAD
-# Ansible RHCE Labs
+Hands-on RHEL/Ansible lab portfolio focused on Linux system administration, configuration management, security, storage, services, and automation.
 
-A collection of Ansible playbooks designed to automate system administration, security hardening, and environment deployment for Red Hat Enterprise Linux (RHEL) environments.
+## What this repository demonstrates
 
-## Featured Playbooks
+- **Ansible fundamentals:** playbooks, inventories, variables, loops, conditionals, handlers, blocks/rescue/always
+- **Linux administration:** users and groups, packages, services, system information, storage and LVM
+- **Security:** SELinux and firewalld configuration
+- **Configuration management:** Jinja2 templates and reusable variables
+- **Infrastructure automation:** web-server and repository configuration
+- **Troubleshooting mindset:** validation tasks and repeatable administrative workflows
 
-*   **[Secure Web Deployment](secure_web.yml):** Automates the installation and hardening of web services, including firewalld and SELinux configurations.
-*   **[User & Group Automation](automate_grp.yml):** Manages local user accounts, group assignments, and permissions at scale.
-*   **[Environment Collaboration](collaborate_env.yml):** Sets up shared directories and collaborative team environments with proper permissions.
+## Lab areas
 
-## How to Use This Repo
-1. Clone the repository: `git clone git@github.com:AElmi-sys/Ansible-rhcsa-labs.git`
-2. Update the `inventory` file with your target nodes.
-3. Run a playbook: `ansible-playbook -i inventory secure_web.yml`
- 2b12cfa (Update README.me)
+| Area | Examples |
+|---|---|
+| Users & groups | User creation, group management, shared directories |
+| Storage | LVM, filesystems, mounts, storage setup |
+| Services | Service management, validation, handlers |
+| Security | SELinux, firewalld |
+| Packages | Conditional and standard package installation |
+| Templates | Jinja2-driven configuration |
+| System administration | Host information and system reports |
+| Ansible control | Variables, loops, conditions, blocks and handlers |
 
-🚀 Lab Overview
-This repository contains production-ready Ansible playbooks designed to replace manual sysadmin workflows with scalable automation.
+## Repository structure
 
-The primary playbook (automate_grp_user.yml) automates user provisioning and secure environment setup:
+The playbooks are being organized by administration topic so the repository can be used both as a study record and as a professional portfolio.
 
-Idempotency: Ensures predictable, repeatable system states across multiple execution runs.
+```text
+playbooks/
+├── users-groups/
+├── storage/
+├── security/
+├── services/
+├── packages/
+├── webserver/
+└── system/
 
-User Management: Provisions multiple system users utilizing loops and forces secure password expiration on first login.
+templates/
+vars/
+inventory/
+docs/
+```
 
-Directory Security: Creates collaborative workspaces (/shares/devops_project) with strict 0770 permissions and group ownership allocations. 18bc54fb8209696f6c99997515b014e207ee0468
+> Some existing lab files are intentionally retained while this repository is being cleaned and reorganized. Local shell history, editor state, swap files, credentials, and real environment-specific inventory data should not be committed.
+
+## Technologies
+
+- RHEL / Rocky Linux
+- Ansible
+- YAML
+- Jinja2
+- SELinux
+- firewalld
+- systemd
+- LVM
+- Git / GitHub
+
+## Purpose
+
+This repository documents hands-on preparation for Linux system administration and the Red Hat Ansible/RHCE skill set. The goal is to demonstrate practical automation rather than only theoretical knowledge.
+
+**Author:** AElmi-sys
