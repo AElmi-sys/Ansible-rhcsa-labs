@@ -1,0 +1,27 @@
+
+---
+- name: Set collaborative project environment
+  hosts: all
+  become: yes 
+
+  tasks:
+    - name: greate sysop group with gid 3000
+      ansible.builtin.group:
+        name: sysops
+        gid: 3000
+        state: present
+
+    - name: Create a user alice with secondary group
+     ansible.builtin. user:
+        name: alice
+        groups: sysops
+        append: yes
+        state: present
+
+    - name: Create a shared directory
+      ansible.builtin.file:
+        path: /common/sysadmin_pro
+        state: directory
+        group: sysops
+        mode: '2770'
+

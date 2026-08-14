@@ -1,0 +1,31 @@
+---
+- name: Manage packages and services with variables
+  hosts: all
+  become: true
+
+  vars:
+    packages:
+      - git
+      - httpd
+      - vim
+    service_name: httpd
+    document_root: /var/www/html
+    index_message: "Welcome to the Ansible variable lab"
+
+  tasks:
+    - name: Install required packages
+      ansible.builtin.dnf:
+        name: "{{ packages }}"
+        state: present
+
+    - name: Ensure web service is running and enabled
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: true
+
+    - name: Create application landing page
+      ansible.builtin.copy:
+        content: "{{ index_message }}\n"
+        dest: "{{ document_root }}/index.html"
+        mode: '0644'

@@ -1,0 +1,27 @@
+
+---
+- name: webservers
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create a group
+      group:
+        name: automation
+        state: present
+
+    - name: Create a user
+      ansible.builtin.user:
+        name: developer
+        groups: automation
+        append: yes
+
+    - name: Package management
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - mod_ssl
+        state: latest
+
+
+

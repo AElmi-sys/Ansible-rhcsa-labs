@@ -1,0 +1,36 @@
+
+---
+- name: Variables and fact
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    company_name: "NGTech24"
+
+  tasks:
+    - name: print  compnay name
+      ansible.builtin.copy:
+        content: "{{ company_name }}\n"
+        dest: /etc/motd
+
+    - name: Display system info
+      ansible.builtin.debug:
+        msg: >
+          Hostname: {{ ansible_facts['hostname'] }}
+          Ip address: {{ ansible_facts['default_ipv4']['address'] }}
+          Total memory: {{ ansible_facts['memtotal_mb'] }}
+          Family Os: {{ ansible_facts['os_family'] }}
+
+
+    - name: Gather system info
+      ansible.builtin.copy:
+        content: |
+          Hostname: {{ ansible_facts['hostname'] }}
+          Ip address: {{ ansible_facts['default_ipv4'] }}
+          Total memory: {{ ansible_facts['memtotal_mb'] }}
+          Family OS: {{ ansible_facts['os_family'] }}
+        dest: /root/system-info.txt
+
+
+    

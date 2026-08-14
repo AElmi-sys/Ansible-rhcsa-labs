@@ -1,0 +1,36 @@
+
+---
+- name: Install three packages once on romte nodes
+  hosts: all
+  become: yes
+
+  vars:
+    packages:
+      - git
+      - httpd
+      - vim
+    service_name: "httpd"
+    service_state: "enabled"
+    path_file: "/var/www/html/index.html"
+    index_file: "Welcome to Variable Lab3 Installed by Ansible"
+
+  tasks:
+    - name: install three packages once on remote nodes
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+      loop: "{{ packages }}"
+
+    - name: Enable service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: true
+        
+
+    - name: Create a file
+      ansible.builtin.copy:
+        content: |
+          "{{ index_file }}"
+        dest: "{{ path_file }}"
+
+

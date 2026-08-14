@@ -1,0 +1,16 @@
+
+---
+- name: Gather host info
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks: 
+   - name: Gather system info
+     debug:
+       msg: |
+
+         Inventory hostname: {{ inventory_hostname }}
+         system hostname: {{ ansible_hostname }}
+         Ip addr: {{ ansible_default_ipv4.address }}
+         Distribution name: {{ ansible_distribution }}

@@ -1,0 +1,37 @@
+---
+- name: Deploy Apache web server
+  hosts: all
+  become: true
+
+  vars:
+    web_package: httpd
+    document_root: /var/www/html
+    index_file: /var/www/html/index.html
+
+  tasks:
+    - name: Install Apache
+      ansible.builtin.dnf:
+        name: "{{ web_package }}"
+        state: present
+
+    - name: Enable and start Apache
+      ansible.builtin.service:
+        name: "{{ web_package }}"
+        state: started
+        enabled: true
+
+    - name: Publish test page
+      ansible.builtin.copy:
+        dest: "{{ index_file }}"
+        content: |
+          Linux Systems & Ansible Automation Lab
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: "{{ web_package }}"
+        state: restarted

@@ -1,0 +1,28 @@
+# Secrets and environment-specific data
+*.vault
+*.key
+*.pem
+*.crt
+.env
+.env.*
+
+# SSH and local configuration
+.ssh/
+.config/
+
+# Shell history
+.bash_history
+.zsh_history
+
+# Editor state
+*.swp
+*.swo
+.viminfo
+
+# Python / tooling caches
+__pycache__/
+*.py[cod]
+
+# Ansible generated files
+.retry
+*.retry

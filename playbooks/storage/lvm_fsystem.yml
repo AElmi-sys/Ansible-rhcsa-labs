@@ -1,0 +1,61 @@
+
+---
+- name: creating lvm by partioning,adding filesystem, creating lmv and mounting
+  hosts: all
+  become: yes
+  vars:
+    target_dev: "/dev/sdb"
+    partition_number: 1
+    vg_name: "vg_data"
+    lv_name: "lv_data"
+    lv_size: "500M"
+    mount_path: "/mnt/data"
+    fs_type:  "ext4"
+
+
+  tasks:
+    - name: Install part package
+      ansible.builtin.package:
+        name: parted
+        state: present
+
+    - name: Partition a device with one gig
+      community.general.parted:
+        device: "{{ target_dev }}"
+        number: "{{ partition_number }}"
+        state: present
+        part_end: 1GiB
+
+    - name: Create vg and initialize the device
+      community.general.lvg:
+        vg: "{{ vg_name }}"
+        pvs: "{{ target_dev }}{{ partition_number }}"
+
+    - name: Create lvm with its size of 500M
+      community.general.lvol:
+        vg: "{{ vg_name }}"
+        lv: "{{ lv_name }}"
+        size: "{{ lv_size }}"
+
+    - name: Create a file system
+      community.general.filesystem:
+        fstype: "{{ fs_type }}"
+        device: "/dev/{{vg_name}}/{{ lv_name }}"
+
+    - name: Create a directory
+      ansible.builtin.file:
+        path: "{{ mount_path }}"
+        state: directory
+
+    - name: mount volume to persist after boot
+      ansible.posix.mount:
+        path: "{{ mount_path }}"
+        src: "/dev{{ vg_name }}/{{ lv_name }}"
+        fstype: fs_type
+        state: mounted
+
+
+        
+
+
+

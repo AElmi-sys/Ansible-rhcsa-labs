@@ -1,0 +1,8 @@
+[production]
+192.0.2.10
+192.0.2.11
+192.0.2.12
+
+# Replace the documentation-only addresses above with your own lab hosts.
+# Example:
+# ansible_user=ansible

@@ -1,0 +1,19 @@
+
+---
+- name: Restart a service only if a file changes
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Restart only if a sshd file changes
+      ansible.builtin.copy:
+        src: /etc/ssh/sshd_config
+        dest: /etc/ssh/sshd_config
+      register: sshd_config_status
+      notify: restart if file changes
+
+  handlers:
+    - name: restart if file changes
+      ansible.builtin.service:
+        name: sshd
+        state: restarted

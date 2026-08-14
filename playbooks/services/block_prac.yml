@@ -1,0 +1,44 @@
+
+
+---
+- name: Install apache and enable it
+  hosts: all
+  become: true
+
+  tasks:
+    - block:
+       - name: Intall apache
+         ansible.builtin.dnf:
+           name: httpd
+           state: present
+
+       - name: Enable and start httpd
+         ansible.builtin.service:
+           name: httpd
+           state: started
+           enabled: true
+
+       - name: create a file
+         ansible.builtin.copy:
+           dest: /var/www/html/index.html
+           content: " Hello there. I am  practicing RHCE\n."
+           owner: root
+           group: root
+           mode: '0644'
+
+      rescue:
+        - name: report if there is an error
+          ansible.builtin.command: systemctl status httpd
+          register: httpd_status 
+
+        - name: Capture the mgs
+          ansible.builtin.debug:
+            var: httpd_status.stdout_lines
+
+      always:
+        - name: run this always
+          ansible.builtin.debug:
+            msg:
+              "task complete on {{ inventory_hostname }}"
+
+
