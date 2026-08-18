@@ -1,0 +1,27 @@
+
+---
+- name: Check if a httpd service is runnig
+  hosts: webservers
+  become: yes 
+
+  tasks:
+    - name: Check if httpd is running
+      ansible.builtin.command: systemctl is-active httpd
+      register: httpd_status
+      failed_when: false
+      changed_when: false
+      check_mode: no
+
+    - name: Start servicce if it is not active
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+      when: httpd_status.stdout != "active"
+
+    - name: Display current status of httpd service
+      ansible.builtin.debug:
+        msg: "The httpd status service status is: {{ httpd_status.stdout }}"
+
+
+  
