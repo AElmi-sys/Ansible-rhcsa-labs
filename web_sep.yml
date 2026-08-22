@@ -1,0 +1,41 @@
+
+
+---
+- name: Install httpd andd dbservers 
+  hosts: all
+  become: true
+
+  vars:
+    web_packages:
+      - httpd
+    db_packages:
+      - mariadb-server 
+
+  tasks:
+    - name: Install httpd 
+      ansible.builtin.dnf:
+        name: "{{web_packages}}"
+        state: present
+      when: "'webservers' in group_names" 
+
+    - name: Install mariabdserver
+      ansible.builtin.dnf:
+        name: "{{ db_packages }}"
+        state: present
+      when: "'db_packages' in group_names"
+
+
+    - name: Start httpd server
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+      when: "'webservers' in group_names"
+    - name: Start dbserver 
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: true
+      when: "'dbservers' in group_names"
+
+  
