@@ -1,0 +1,28 @@
+
+---
+- name: Gather system info
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install httpd only if it belongs to red hat os family
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] ==  "RedHat" 
+
+    - name: Start httpd servicce
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true 
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Gather system info
+      ansible.builtin.debug:
+        msg:
+          - "{{ ansible_facts['hostname'] }}"
+          - "{{ ansible_facts['default_ipv4']['address'] }}"
+          - "{{ ansible_facts['os_family'] }}"
+          - "{{ ansible_facts['distribution'] }}"
