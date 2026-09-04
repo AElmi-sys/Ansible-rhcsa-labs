@@ -1,0 +1,39 @@
+
+---
+- name: system and repo
+  hosts: datacenter
+  become: true
+
+  tasks:
+    - name: set up repo
+      ansible.builtin.yum_repository:
+        name: AppStream
+        description: RHEL AppStream repository
+        baseurl: https://kernel.org
+        gpgcheck: false
+        enabled: true
+
+    - name: Install packages
+      ansible.builtin.dnf:
+        name:
+          - vim-enhanced
+          - tmux
+          - wget
+        state: latest
+
+    - name: Add a user
+      ansible.builtin.user:
+        name: automation
+        shell: /bin/bash
+        groups: wheel
+        append: true
+
+    - name: Allow  firewalld service http and https 
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        immediate: true
+        permanent: true
+        state: enabled
+      loop:
+        - http
+        - https
