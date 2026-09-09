@@ -1,0 +1,33 @@
+
+---
+- name: storage, lvm and storage managent
+  hosts: node1.example 
+  become: true
+
+  tasks:
+    - name: Initialize  disks as PVS and create a volume group
+      community.general.lvg:
+        vg: research_vg
+        pvs: /dev/sda
+        state: present
+
+    - name: Create a logical volume of 800M 
+      community.general.lvol:
+        vg: research_vg
+        lv: data_lv
+        size: 800
+
+    - name: Add file system
+      community.general.filesystem:
+        fstype: xfs
+        dev: /dev/research_vg/data_lv 
+
+    - name: mount the file
+      ansible.posix.mount:
+        path: /mnt/research_data
+        src: /dev/research_vg/data_lv
+        fstype: xfs
+        state: mounted
+       
+        
+
