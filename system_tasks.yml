@@ -1,0 +1,28 @@
+
+---
+- name: User and key configurations
+  hosts: datacenter
+  become: true
+
+  tasks:
+    - name: Create a user with key configuration
+      ansible.builtin.user:
+        name: developer
+        state: present
+        generate_ssh_key: true
+
+    - name: cron job schedulle
+      ansible.builtin.cron:
+        name: Maintenance check
+        minute: "*/15"
+        user: developer
+        job: '/usr/bin/logger "System maintenance check completed".'
+
+    - name: Archive creation
+      community.general.archive:
+        path: /var/log 
+        dest: /tmp/log_backup.tar.gz
+        format: gz
+        mode: '0640'
+
+
