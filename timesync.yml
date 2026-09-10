@@ -1,0 +1,11 @@
+
+---
+- name: Confifure Network Time Synchronization
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: pool.ntp.org
+        iburst: true
+  roles:
+    - rhel-system-roles.timesync
