@@ -1,0 +1,16 @@
+
+---
+- name: Schedule tasks and Cron Management
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Schedulle a cron
+      ansible.builtin.cron:
+        name: log disk usage
+        minute: '0'
+        hour: "*/2"
+        job: "df -h >> /var/log/disk_usage.log"
+
+    
+
