@@ -1,0 +1,23 @@
+
+---
+- name: Firewall automation
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add http and https to firewall list
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop:
+        - http
+        - https
+
+    - name: Add port to firewall
+      ansible.posix.firewalld:
+        port: 8888/tcp
+        permanent: true
+        immediate: true
+        state: enabled
