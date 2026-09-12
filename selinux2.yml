@@ -1,0 +1,35 @@
+
+---
+- name: SElinux and Security automation
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Selinux and Security automation
+      ansible.posix.selinux:
+        policy: targeted
+        state: enforcing
+
+    - name: Enable the selinux boolean
+      ansible.posix.seboolean:
+        name: httpd_enable_homedirs
+        state: true
+        persistent: true
+
+    - name: Create a file contennt
+      ansible.builtin.file:
+        path: /webcontent
+        state: directory
+        owner: root
+        group: root
+        mode: '0755' 
+
+    - name: set selinux file content type
+      community.general.sefcontext:
+        target: '/webcontent(\.*)?'
+        setype: httpd_sys_content_t
+        state: present 
+
+    - name: Apply the secontent file
+      ansible.builtin.command: restorecon -R -v /webcontent
+
