@@ -1,0 +1,16 @@
+
+---
+- name: Check if a service is installed
+  hosts: all
+  become: true
+
+  tasks:
+    - name: check if httpd is running
+      ansible.builtin.command: systemctl is-running httpd
+      register: http_status
+      changed_when: false
+
+    - name: Display the status of httpd
+      ansible.builtin.debug:
+        msg: "webserver is: {{ httpd_status.stdout }}
+      when:  http_status.rc   == 0
