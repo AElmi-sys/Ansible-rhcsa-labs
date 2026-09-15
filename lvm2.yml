@@ -1,0 +1,34 @@
+
+---
+- name: Storage automation
+  hosts: dbservers
+  become: true
+
+  tasks:
+
+    - name: Create  logical group volume 
+      community.general.lvg:
+        vg: vg_data
+        pvs: /dev/sdb
+
+    - name: Create a logical volume
+      community.general.lvol:
+        vg: vg_data
+        lv: lv_data
+        size: 2g
+        
+
+    - name: Add a filesystem
+      community.general.filesystem:
+        dev: /dev/vg_data/lv_data 
+        fstype: xfs
+
+    - name: Mount a file
+      ansible.builtin.mount:
+        path: /data
+        src: /dev/vg_data/lv_data
+        fstype: xfs
+        state: mounted
+
+
+
