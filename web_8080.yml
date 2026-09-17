@@ -1,0 +1,45 @@
+
+---
+- name: Selinux and firewall
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Configure apache to list port 8080
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^listen'
+        line:  listen 8080
+
+    - name: Add port 8080 in selinux
+      community.general.seport:
+        ports: 8080
+        proto: tcp
+        setype: http_port_t
+        state: present
+
+    - name: Add port 8080 to firewall
+      ansible.posix.firewalld:
+        port: 8080/tcp
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Create a file
+      ansible.builtin.copy:
+        content: " RHCE EX94 TEST"
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+
+
+
+
+
