@@ -1,0 +1,34 @@
+
+---
+- name: Error handling and recovery
+  hosts: all
+  become: true
+
+  tasks:
+    - block:
+       - name: Install a package
+         ansible.builtin.dnf:
+           name: invalid-package
+           state: present
+      rescue:
+       - name: Install httpd
+         ansible.builtin.dnf:
+           name: httpd
+           state: present
+
+       - name: Display a message
+         ansible.builtin.debug:
+           msg: "Primaary packaged installtion failed. Backup package install successfully."
+
+      always:
+       - name: Append deployment completion log
+         ansible.builtin.lineinfile:
+           path: /var/log/ansible_deploy.log
+           line: "deployment attempt finished on target node." 
+           create: true
+           mode: '0644'
+      
+
+      
+
+
