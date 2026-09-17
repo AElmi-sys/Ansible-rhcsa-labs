@@ -1,0 +1,26 @@
+
+---
+- name: Users, groups and file management
+  hosts: webservers
+  become: true
+  
+  tasks:
+    - name: create a group
+      ansible.builtin.group:
+        name: ops
+        state: present
+
+    - name: Create user
+      ansible.builtin.user:
+        name: opsadmin
+        shell: /bin/bash
+        group: ops
+
+    - name: Create a file
+      ansible.builtin.copy:
+        dest: /home/opsadmin/README
+        content: |
+          "Managed by Ansible."
+        owner: opsadmin
+        group: ops
+        mode: '0644'
