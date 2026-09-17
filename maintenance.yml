@@ -1,0 +1,28 @@
+
+---
+- name: Install a package
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install a package
+      ansible.builtin.dnf:
+        name: cronie
+        state: present
+
+    - name: Restart and Enbale crond
+      ansible.builtin.service:
+        name: crond
+        state: started
+        enabled: true 
+
+    - name: copy content
+      ansible.builtin.copy:
+        dest: /etc/motd
+        owner: root
+        mode: '0644'
+        content:  |
+          "Authorized access only"
+          "Managed by Ansible"
+
+
