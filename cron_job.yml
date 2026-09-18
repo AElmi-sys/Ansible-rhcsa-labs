@@ -1,0 +1,16 @@
+
+---
+- name: schedulle tasks
+  hosts: database
+  become: true
+
+  tasks:
+    - name: schedulle a cron job for root
+      ansible.builtin.cron:
+        name: system_log_clean
+        weekday: "*" 
+        hour: "2"
+        minute: "0"
+        job: /usr/bin/find /var/log -type f -name "*.tmp" -delete 
+        state: present 
+

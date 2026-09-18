@@ -1,0 +1,21 @@
+
+---
+- name: User and group management automation
+  hosts: datacenter
+  become: true
+
+  tasks:
+    - name: Create group with gid
+      ansible.builtin.group:
+        name: admins
+        gid: 2000
+        state: present
+
+    - name: Create a user with primary group
+      ansible.builtin.user:
+        name: contractor
+        shell: /bin/bash
+        uid: 2000
+        group: admins
+        state: present
+
