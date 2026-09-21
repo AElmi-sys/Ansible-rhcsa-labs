@@ -1,0 +1,47 @@
+
+---
+- name: Intall if httpd is checked
+  hosts: webservers
+  become: true
+
+  tasks:
+
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Check if service is running
+      ansible.builtin.command: systemctl is-active httpd
+      register: service_status 
+      changed_when: false
+      failed_when: false
+
+
+    - name: Display runnimg a message
+      ansible.builtin.debug:
+        msg: " httpd is already running"
+      when: service_status.stdout.strip() == "active"
+
+    - name: Start https if not started
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+      when: service_status.stdout.strip() != "active" 
+
+
+
+    - name: Display another service message
+      ansible.builtin.debug:
+        msg: "httpd was started"
+      when: service_status.stdout.strip() != "active"
+
+    - name: Create a file
+      ansible.builtin.copy:
+        content: Managed by Ansible
+        dest: /etc/ex294-status
+        owner: root
+        group: root
+        mode: '0644'
+
