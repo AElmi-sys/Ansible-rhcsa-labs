@@ -1,0 +1,67 @@
+
+---
+- name: Intall httpd, and enabke it
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+      
+
+    - name: httpd listening on port 8090
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^listen'
+        line: listen 8090 
+
+    - name: Add port 8090 to firewall
+      ansible.posix.firewalld:
+        port: 8090/tcp
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Allow port through SElinux
+      community.general.seport:
+        ports: 8090 
+        proto: tcp
+        setype: http_port_t
+        state: present
+
+    - name: Create a file
+      ansible.builtin.file:
+        path: /srv/ex294-site
+        state: directory
+        mode: '0755' 
+
+    - name: label file
+      community.general.sefcontext:
+        target: '/srv/ex294-site(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+      notify: Restore SElinux context
+
+
+    - name: Create a  template file
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /srv/ex294-site/index.html
+        owner: root
+        group: root
+        mode:  '0644'
+
+  handlers:
+    - name: Restore SElinux context
+      ansible.builtin.command: restorecon -Rv /srv/ex294-site
+      
+
+
