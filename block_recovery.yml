@@ -1,0 +1,21 @@
+
+---
+- name: Block, rescue and always
+  hosts: all
+  become: true
+
+  tasks:
+    - block:
+        - name: Create a file
+          ansible.builtin.command: /usr/bin/false
+
+      rescue:
+        - name: Display a message
+          ansible.builtin.debug:
+            msg: Configuration deployment failed 
+
+      always:
+        - name: run this always
+          ansible.builtin.debug:
+            msg: Configuration taask complete
+    
