@@ -1,0 +1,13 @@
+
+---
+- name: Configure NTP on targeted nodes
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: pool.ntp.org
+        iburst: true
+  roles:
+    - rhel-system-roles.timesync
+
+
