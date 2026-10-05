@@ -1,0 +1,30 @@
+
+---
+- name: System storage and lvm automation
+  hosts: dbservers
+  become: true
+
+  tasks:
+    - name: Create group lvm
+      community.general.lvg:
+        vg: vg_data
+        pvs: /dev/sdb
+        state: present
+
+    - name: Create a logical lvm
+      community.general.lvol:
+        vg: vg_data
+        lv: lv_data
+        size: 500
+
+    - name: Add a file system
+      community.general.filesystem:
+        dev: /dev/vg_data/lv_data
+        fstype: xfs
+
+    - name: Mount it 
+      ansible.posix.mount:
+        path: /data/lvm
+        fstype: xfs
+        src: /dev/vg_data/lv_data
+        state: mounted
