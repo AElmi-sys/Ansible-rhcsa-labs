@@ -1,0 +1,68 @@
+
+---
+- name: create httpd, allow it through firewall and selinux
+  hosts: webservers
+  become: true
+  vars:
+    web_package: httpd
+    web_service: httpd
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: "{{ web_package }}"
+        state: present
+
+    - name: Start and enable httpd
+      ansible.builtin.service:
+        name: "{{ web_service }}"
+        state: started
+        enabled: true
+
+    - name: Configure to listen on 8088
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^listen'
+        line: listen 8088
+
+    - name: Allow port 8088 through firewall
+      ansible.posix.firewalld:
+        port: 8088/tcp
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Allow port 8088 through SElinux
+      community.general.seport:
+        ports: 8088
+        proto: tcp
+        setype: http_port_t
+        state: present
+    - name: Create a direstory
+      ansible.builtin.file:
+        path: /var/www/ex294
+        state: directory
+
+
+    - name: Create a template
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/ex294/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name:  relebbel file
+      community.general.sefcontext:
+        target: '/var/www/ex294(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+
+    - name: apply a lebbel to file
+      ansible.builtin.command: restorecon -Rv /var/www/ex294
+      changed_when: false
+        
+
+
+    
+
