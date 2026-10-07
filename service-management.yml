@@ -1,0 +1,46 @@
+
+---
+- name: Manage service
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install httpd and mariadb-server
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - mariadb-server
+
+    - name: start ans enable httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true 
+
+    - name: start and enabke mariabd
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: true
+
+    - name: check the status of httpd
+      ansible.builtin.command: systemctl is-active httpd
+      register: httpd_status 
+      changed_when: false 
+
+    - name: display the status of httpd
+      ansible.builtin.debug:
+        msg: "httpd status is {{ httpd_status.stdout }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
