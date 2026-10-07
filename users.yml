@@ -1,0 +1,40 @@
+
+---
+- name: vault and user management
+  hosts: all
+  become: true
+  vars_files:
+    - vars/user_vault.yml
+
+  tasks:
+    - name: Create a group
+      ansible.builtin.group:
+        name: devops
+        gid: 2000
+        state: present
+      
+    - name: create a user
+      ansible.builtin.user:
+        name: "{{ user_one  }}"
+        group: devops
+        shell: /bin/bash
+        password: "{{ user_pwd }}"
+        
+
+    - name: create a user with primary group
+      ansible.builtin.user:
+        name:  "{{ user_two  }}"
+        group: devops
+        shell: /bin/bash
+        password: "{{ user_pwd }}"
+        
+
+    - name: create a user wwith no login
+      ansible.builtin.user:
+        name: auditor
+        shell: /sbin/nologin
+        
+        
+
+
+
