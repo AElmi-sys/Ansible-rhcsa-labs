@@ -1,0 +1,25 @@
+
+---
+- name: Tuning and Custom facts
+  hosts: dbservers
+  become: true
+
+  tasks:
+    - name: create adorectory
+      ansible.builtin.file:
+        path: /etc/ansible/facts.d/
+        state: directory
+        mode: '0755'
+
+    - name: copy a content
+      ansible.builtin.copy:
+        content: |
+         [sample_exam]
+         package = httpd
+         service = httpd
+         state = started
+         enabled = true 
+        dest: /etc/ansible/facts.d/custom.fact
+        owner: root
+        group: root
+        mode: '0644'
