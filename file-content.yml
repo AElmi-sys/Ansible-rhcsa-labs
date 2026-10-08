@@ -1,0 +1,26 @@
+
+---
+- name: Create content files
+  hosts: all
+  become: true
+
+  tasks:
+    - name: set selinux enforcing
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SElINUX='
+        line: 'SElINUX=enforcing'
+
+    - name: add a custom block
+      ansible.builtin.blockinfile:
+        path: /etc/hosts
+        block: |
+          ansible_facts['hostname'] 
+
+    - name: copy a content to a directory
+      ansible.builtin.copy:
+        content: "Only authorized indivitauls are allowed access\n"
+        dest: /etc/issue
+        owner: root
+        group: root
+        mode: '0644'
