@@ -6,7 +6,7 @@
 
   tasks:
     - block:
-        - name: Create a file
+        - name: Create a file /bin path
           ansible.builtin.command: /usr/bin/false
 
       rescue:
@@ -17,5 +17,5 @@
       always:
         - name: run this always
           ansible.builtin.debug:
-            msg: Configuration taask complete
+            msg: Configuration task complete
     
